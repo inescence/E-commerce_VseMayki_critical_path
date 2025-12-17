@@ -1,0 +1,21 @@
+version: "3.7"
+
+services:
+  smoke:
+    image: first_smoke:v1
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./:/usr/workspace
+    command: /bin/sh -c "pytest -sv --alluredir=/usr/workspace/allure-results"
+
+  allure:
+    image: allure/allure:latest
+    depends_on:
+      - smoke  # Ждем завершения выполнения тестов
+    volumes:
+      - ./allure-results:/app/allure-results
+      - ./allure-report:/app/allure-report
+    command: generate /app/allure-results -o /app/allure-report  # Генерация отчета
+

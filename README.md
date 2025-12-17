@@ -1,2 +1,4 @@
 # E-commerce_VseMayki_critical_path
-Create a order
+
+
+The Сritical path test - Create a order
