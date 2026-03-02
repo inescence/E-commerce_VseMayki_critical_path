@@ -1,15 +1,12 @@
-import time
-
+from data.links import Links
 from base.base_page import BasePage
 from selenium.webdriver.support import expected_conditions as EC
+import allure
 
 class CheckoutPage(BasePage):
 
-    _PAGE_CHECKOUT_URL = "https://www.vsemayki.stage/cart/delivery"
-
-    _PAYMENT_URL = "https://www.vsemayki.stage/newpayment?order"
-
-    _DELIVERY_URL = "https://www.vsemayki.stage/cart/delivery#map"
+    _PAGE_URL = Links.CHECKOUT_PAGE
+    _ORDER_STATUS_URL = "https://www.vsemayki.ru/newpayment/"
 
     _NAME_FIELD = "//input[@autocomplete='given-name']"
     _SURNAME_FIELD = "//input[@autocomplete='family-name']"
@@ -24,61 +21,51 @@ class CheckoutPage(BasePage):
     _PICKUP_POINT = "//div[contains(@class, 'autotest-pickup-point')]"
     _SUBMIT_POINT = "//button[@id='autotest-checkout-delivery-pickup-select']"
 
-
-    def checkout_is_opened(self):
-        self.wait.until(EC.url_to_be(self._PAGE_CHECKOUT_URL))
-
-
+    @allure.step("Enter name")
     def add_name(self):
-        name = self.wait.until(EC.visibility_of_element_located(self._NAME_FIELD))
+        name = self.wait.until(EC.element_to_be_clickable(self._NAME_FIELD))
         name.click()
         name.send_keys('name_test')
 
-
-
+    @allure.step("Enter surname")
     def add_surname(self):
         surname = self.wait.until(EC.visibility_of_element_located(self._SURNAME_FIELD))
         surname.click()
         surname.send_keys("family_name")
 
+    @allure.step("Enter phone number")
     def add_number(self):
-        number = self.wait.until(EC.visibility_of_element_located(self._NUMBER_FIELD))
-        number.click()
-        number.send_keys("999-999-99-99")
+        phone_number = self.wait.until(EC.visibility_of_element_located(self._NUMBER_FIELD))
+        phone_number.click()
+        phone_number.send_keys("999-999-99-99")
 
+    @allure.step("Enter email")
     def add_email(self):
         email = self.wait.until(EC.visibility_of_element_located(self._EMAIL_FIELD))
         email.click()
-        email.send_keys("test@test.ru")
-
-    def add_comment(self):
-        comment = self.wait.until(EC.visibility_of_element_located(self._ADD_COMMENT_BUTTON))
-        comment.click()
-        comment.send_keys("Заказ в работу не брать, для теста")
+        email.send_keys("autotest@vsemayki.ru")
 
 
-
-    def save_comment(self):
-        save = self.wait.until(EC.element_to_be_clickable(self._SAVE_COMMENT_BUTTON))
-        save.click()
-
+    @allure.step("Сlick delivery button")
     def click_delivery_button(self):
-        self.wait.until(EC.element_to_be_clickable(self._DELIVERY_BUTTON)).click()
-        self.wait.until(EC.url_to_be(self._DELIVERY_URL))
+        delivery_button = self.wait.until(EC.element_to_be_clickable(self._DELIVERY_BUTTON))
+        delivery_button.click()
 
-    def select_pickup_point(self):
-        pickup_point = self.wait.until(EC.element_to_be_clickable(self._PICKUP_POINT))
-        pickup_point.click()
+    @allure.step("Enter comment")
+    def add_comment(self):
+        add_comment = self.wait.until(EC.visibility_of_element_located(self._ADD_COMMENT_BUTTON))
+        add_comment.click()
+        add_comment.send_keys("Заказ в работу не брать, для теста")
 
-    def submit_point(self):
-        submit = pickup_point = self.wait.until(EC.element_to_be_clickable(self._SUBMIT_POINT))
-        submit.click()
+    @allure.step("Save comment")
+    def save_comment(self):
+        self.wait.until(EC.element_to_be_clickable(self._SAVE_COMMENT_BUTTON)).click()
 
-
+    @allure.step("Make order and screenshot")
     def make_order(self):
-        order = self.wait.until(EC.element_to_be_clickable(self._ORDER_BUTTON))
-        order.click()
-        self.wait.until(EC.url_contains(self._PAYMENT_URL))
+        self.wait.until(EC.element_to_be_clickable(self._ORDER_BUTTON)).click()
+        self.wait.until(EC.url_contains(self._ORDER_STATUS_URL))
+        self.screenshot()
 
 
 
