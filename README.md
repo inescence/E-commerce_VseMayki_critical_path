@@ -1,0 +1,1 @@
+This Playwright and Python-based automation framework for the VseMayki e-commerce site focuses on critical path testing, stability, and maintainability. The repository utilizes the Page Object Model (POM), intelligent waits, and Allure reporting to ensure robust, readable, and efficient test execution. You can review the project code and structure at GitHub.
